@@ -1,4 +1,4 @@
-class Tree:
+class BinarySearchTree:
     def __init__(self, val):
         self.val = None
         if val is not None:
@@ -11,18 +11,18 @@ class Tree:
         if self.val is not None:
             if val < self.val:
                 if self.left is None:
-                    self.left = Tree(val)
+                    self.left = BinarySearchTree(val)
                 else:
                     #look left
                     self.left.insert_node(val)        
             else:
                 if self.right is None:
-                    self.right = Tree(val)
+                    self.right = BinarySearchTree(val)
                 else:
                 #look right
                     self.right.insert_node(val)
         else:
-            self.val = Tree(val)
+            self.val = BinarySearchTree(val)
 
     def find_val(self, val):
         '''
@@ -60,11 +60,24 @@ class Tree:
         if self.right is not None:
             self.right.print_tree()
 
+    def info_queue(self):
+        info = """
+        Binary Search trees (BST) are a special type of binary tree where the left child node  always has a value less than the parent, and the right is greater than the parent.
+        The following operations can be done with their repsective Time Complexity:
+        Searching - O(n), but on average it will be more like O(h), where h is the height of the tree
+        Insertion - O(n), but in general it will be more like O(h), where h is the height of the tree
+        Deletion - O(n), but in general it will be more like O(h), where h is the height of the tree
+        
+        The following are what makes a tree classified as a Binary Tree
+        1. The left subtree of a node contains only nodes with keys lesser than the node's key
+        2. The right subtree of a node contains only nodes with keys greater tthan the node's key
+        3. The left and right subtree must also be a binary search tree
+        """
 
 def main():
-    tree_obj = Tree(10)
-    tree_obj.left = Tree(5)
-    tree_obj.right = Tree(13)
+    tree_obj = BinarySearchTree(10)
+    tree_obj.left = BinarySearchTree(5)
+    tree_obj.right = BinarySearchTree(13)
     tree_obj.insert_node(12)
     tree_obj.insert_node(3)
     tree_obj.insert_node(16)

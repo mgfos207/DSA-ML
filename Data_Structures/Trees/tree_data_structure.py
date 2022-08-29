@@ -73,11 +73,57 @@ class BinarySearchTree:
         2. The right subtree of a node contains only nodes with keys greater tthan the node's key
         3. The left and right subtree must also be a binary search tree
         """
+        print(info)
+
+class AVLTree(BinarySearchTree):
+    def __init__(self, val):
+        super().__init__(val)
+        self.height = 1
+        self.bf = 0
+
+    def get_height(self):
+        if self.val is None:
+            return 0
+
+        return self.height
+
+    def rebalance(self):
+        pass
+
+    def insert_node(self, val):
+        if self.val is not None:
+            if val < self.val:
+                if self.left is None:
+                    self.left = AVLTree(val)
+                else:
+                    #look left
+                    self.left.insert_node(val)        
+            else:
+                if self.right is None:
+                    self.right = AVLTree(val)
+                else:
+                    #look right
+                    self.right.insert_node(val)
+        else:
+            self.val = AVLTree(val)
+
+        self.height = max(self.left.get_height(), self.right.get_height()) + 1
+        self.bf = self.left.get_height() - self.right.get_height()
+        self.rebalance()
+
 
 def main():
-    tree_obj = BinarySearchTree(10)
-    tree_obj.left = BinarySearchTree(5)
-    tree_obj.right = BinarySearchTree(13)
+    # tree_obj = BinarySearchTree(10)
+    # tree_obj.left = BinarySearchTree(5)
+    # tree_obj.right = BinarySearchTree(13)
+    # tree_obj.insert_node(12)
+    # tree_obj.insert_node(3)
+    # tree_obj.insert_node(16)
+
+    # tree_obj.find_val(2)
+    tree_obj = AVLTree(10)
+    tree_obj.left = AVLTree(5)
+    tree_obj.right = AVLTree(13)
     tree_obj.insert_node(12)
     tree_obj.insert_node(3)
     tree_obj.insert_node(16)

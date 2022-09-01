@@ -81,13 +81,10 @@ class AVLTree(BinarySearchTree):
         self.height = 1
         self.bf = 0
 
-    def get_height(self):
-        left_height = self.left.height if self.left is not None else 0
-        right_height = self.right.height if self.right is not None else 0
-        return max(left_height, right_height)
-
-    def get_left_right_height(self, type):
-        return self.__getattribute__(type).height if self.__getattribute__(type) else 0
+    def get_height(self, Node):
+        if Node is None:
+            return 0
+        return Node.height
 
     def rotate(self, rot_dir, node=None):
         #check to see if the node exists with data otherwise assign to the None branch
@@ -108,79 +105,98 @@ class AVLTree(BinarySearchTree):
     def update_tree(self, new_root):
         self = new_root
 
-    def rotate_right(self):
-        old_root = self
-        new_root = self.left
-        new_left = new_root.right
-        old_root.left = new_left
-        new_root.right = self
-        new_root.height = 1 + new_root.get_height()
+    def rotate_right(self, Node):
+        new_root = Node.left
+        old_right = new_root.right
+        new_root.right = Node
+        Node.left = old_right
+        Node.height = 1 + max(self.get_height(Node.left), self.get_height(Node.right))
+        new_root.height = 1 + max(self.get_height(new_root.left), self.get_height(new_root.right))
+        # old_root = Node
+        # new_root = Node.left
+        # new_left = new_root.right
+        # old_root.left = new_left
+        # new_root.right = Node
+        # new_root.height = 1 + new_root.get_height()
         return new_root
 
-    def rotate_left(self):
-        old_root = self
-        new_root = self.right
-        new_right = new_root.left
-        old_root.right = new_right
-        new_root.left = self
-        new_root.right = self
-        new_root.height = 1 + new_root.get_height()
+    def rotate_left(self, Node):
+        new_root = Node.right
+        old_right = new_root.left
+        new_root.left = Node
+        Node.right = old_right
+        Node.height = 1 + max(self.get_height(Node.left), self.get_height(Node.right))
+        new_root.height = 1 + max(self.get_height(new_root.left), self.get_height(new_root.right))
+
+        # old_root = Node
+        # new_root = Node.right
+        # new_right = new_root.left
+        # old_root.right = new_right
+        # new_root.left = Node
+        # new_root.right = new_right
+        # new_root.height = 1 + new_root.get_height()
         return new_root
         # self = new_root
         # self.height = 1 + self.get_height()
 
-    def rebalance(self, val):
+    def rebalance(self,val, bf, Node):
         """
         We should probably keep a temp variable to keep track of changes
         Once we complete making those changes then we should apply that temp variable
         As the new tree
         """
-        new_root = self
+        new_root = Node
         #Let's do a check of the tree to see if it needs rebalancing
-        if self.bf > 1: #Left side is heavy rebalance
+        if bf > 1: #Left side is heavy rebalance
             #if val is greater than current left  node rotate left then right
             #else do the initial rebalnce which is the right rebalance
-            if val > self.val:
-                self.rotate('left', self.right)
+            if val > new_root.left.val:
+                new_root.left = self.rotate_left(new_root.left)
+                # self.rotate('left', self.right)
                 # self.right.rotate_left()
             # self.rotate_right()
-            new_root = self.rotate('right')
+            new_root = self.rotate_right(new_root)
 
-        elif self.bf < -1: #Do the same thing except for the right
+        elif bf < -1: #Do the same thing except for the right
             #if val is greater than current right node right then left rotation
             #else do the left rotation
-            if val > self.val:
-                self.rotate('right', self.left)
+            if val < new_root.rightval:
+                new_root.right = self.rotate_right(new_root.right)
 
-            new_root = self.rotate('left')
+            new_root = self.rotate_left(new_root)
 
         else:
             return new_root
 
         return new_root
 
-    def insert_node(self, val):
-        if self.val is not None:
-            if val < self.val:
-                if self.left is None:
-                    self.left = AVLTree(val)
+    def insert_node(self, val, root):
+        if root.val is not None:
+            if val < root.val:
+                if root.left is None:
+                    root.left = AVLTree(val)
                 else:
                     #look left
-                    self.left.insert_node(val)        
+                    root.left = self.insert_node(val, root.left)        
             else:
-                if self.right is None:
-                    self.right = AVLTree(val)
+                if root.right is None:
+                    root.right = AVLTree(val)
                 else:
                     #look right
-                    self.right.insert_node(val)
+                    root.right = self.insert_node(val, root.right)
         else:
-            self.val = AVLTree(val)
+            root.val = AVLTree(val)
 
-        left_height = self.get_left_right_height('left')
-        right_height = self.get_left_right_height('right')
-        self.bf = left_height - right_height
-        self.height = 1 + self.get_height()
-        new_root = self.rebalance(val)
+        # return root
+
+        left_height = self.get_height(root.left)
+        right_height = self.get_height(root.right)
+        root.height = 1 + max(left_height, right_height)
+        new_root = root
+        bf = left_height - right_height
+        if bf > 1 or bf < -1:
+            # self.height = 1 + self.get_height()
+            return self.rebalance(val, bf, root)
         return new_root
 
 
@@ -196,12 +212,13 @@ def main():
     tree_obj.find_val(2)
 
     #AVL Tree
-    tree_obj = AVLTree(5)
-    tree_obj = tree_obj.insert_node(3)
-    tree_obj = tree_obj.insert_node(2)
-    tree_obj.insert_node(10)
+    tree_obj = AVLTree(10)
+    tree_obj = tree_obj.insert_node(2, tree_obj)
+    tree_obj = tree_obj.insert_node(3, tree_obj)
 
-    tree_obj.find_val(2)
+    tree_obj.insert_node(40)
+
+    # tree_obj.find_val(2)
 
 if __name__ == "__main__":
     main()

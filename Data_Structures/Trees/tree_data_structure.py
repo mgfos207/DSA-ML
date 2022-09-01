@@ -82,13 +82,82 @@ class AVLTree(BinarySearchTree):
         self.bf = 0
 
     def get_height(self):
-        if self.val is None:
-            return 0
+        left_height = self.left.height if self.left is not None else 0
+        right_height = self.right.height if self.right is not None else 0
+        return max(left_height, right_height)
 
-        return self.height
+    def get_left_right_height(self, type):
+        return self.__getattribute__(type).height if self.__getattribute__(type) else 0
 
-    def rebalance(self):
-        pass
+    def rotate(self, rot_dir, node=None):
+        #check to see if the node exists with data otherwise assign to the None branch
+        new_root = None
+        if node is not None:
+            new_root = getattr(self.__getattribute__(node), f"rotate_{rot_dir}")()
+        else:
+            old_root = self
+            if rot_dir == 'right':
+                new_root = self.left
+                new_root.right = old_root
+            else:
+                new_root = self.right
+                new_root.left = old_root
+
+        return new_root
+
+    def update_tree(self, new_root):
+        self = new_root
+
+    def rotate_right(self):
+        old_root = self
+        new_root = self.left
+        new_left = new_root.right
+        old_root.left = new_left
+        new_root.right = self
+        new_root.height = 1 + new_root.get_height()
+        return new_root
+
+    def rotate_left(self):
+        old_root = self
+        new_root = self.right
+        new_right = new_root.left
+        old_root.right = new_right
+        new_root.left = self
+        new_root.right = self
+        new_root.height = 1 + new_root.get_height()
+        return new_root
+        # self = new_root
+        # self.height = 1 + self.get_height()
+
+    def rebalance(self, val):
+        """
+        We should probably keep a temp variable to keep track of changes
+        Once we complete making those changes then we should apply that temp variable
+        As the new tree
+        """
+        new_root = self
+        #Let's do a check of the tree to see if it needs rebalancing
+        if self.bf > 1: #Left side is heavy rebalance
+            #if val is greater than current left  node rotate left then right
+            #else do the initial rebalnce which is the right rebalance
+            if val > self.val:
+                self.rotate('left', self.right)
+                # self.right.rotate_left()
+            # self.rotate_right()
+            new_root = self.rotate('right')
+
+        elif self.bf < -1: #Do the same thing except for the right
+            #if val is greater than current right node right then left rotation
+            #else do the left rotation
+            if val > self.val:
+                self.rotate('right', self.left)
+
+            new_root = self.rotate('left')
+
+        else:
+            return new_root
+
+        return new_root
 
     def insert_node(self, val):
         if self.val is not None:
@@ -107,26 +176,30 @@ class AVLTree(BinarySearchTree):
         else:
             self.val = AVLTree(val)
 
-        self.height = max(self.left.get_height(), self.right.get_height()) + 1
-        self.bf = self.left.get_height() - self.right.get_height()
-        self.rebalance()
+        left_height = self.get_left_right_height('left')
+        right_height = self.get_left_right_height('right')
+        self.bf = left_height - right_height
+        self.height = 1 + self.get_height()
+        new_root = self.rebalance(val)
+        return new_root
 
 
 def main():
-    # tree_obj = BinarySearchTree(10)
-    # tree_obj.left = BinarySearchTree(5)
-    # tree_obj.right = BinarySearchTree(13)
-    # tree_obj.insert_node(12)
-    # tree_obj.insert_node(3)
-    # tree_obj.insert_node(16)
-
-    # tree_obj.find_val(2)
-    tree_obj = AVLTree(10)
-    tree_obj.left = AVLTree(5)
-    tree_obj.right = AVLTree(13)
+    #Binary Search Tree
+    tree_obj = BinarySearchTree(10)
+    tree_obj.left = BinarySearchTree(5)
+    tree_obj.right = BinarySearchTree(13)
     tree_obj.insert_node(12)
     tree_obj.insert_node(3)
     tree_obj.insert_node(16)
+
+    tree_obj.find_val(2)
+
+    #AVL Tree
+    tree_obj = AVLTree(5)
+    tree_obj = tree_obj.insert_node(3)
+    tree_obj = tree_obj.insert_node(2)
+    tree_obj.insert_node(10)
 
     tree_obj.find_val(2)
 

@@ -112,12 +112,6 @@ class AVLTree(BinarySearchTree):
         Node.left = old_right
         Node.height = 1 + max(self.get_height(Node.left), self.get_height(Node.right))
         new_root.height = 1 + max(self.get_height(new_root.left), self.get_height(new_root.right))
-        # old_root = Node
-        # new_root = Node.left
-        # new_left = new_root.right
-        # old_root.left = new_left
-        # new_root.right = Node
-        # new_root.height = 1 + new_root.get_height()
         return new_root
 
     def rotate_left(self, Node):
@@ -128,16 +122,7 @@ class AVLTree(BinarySearchTree):
         Node.height = 1 + max(self.get_height(Node.left), self.get_height(Node.right))
         new_root.height = 1 + max(self.get_height(new_root.left), self.get_height(new_root.right))
 
-        # old_root = Node
-        # new_root = Node.right
-        # new_right = new_root.left
-        # old_root.right = new_right
-        # new_root.left = Node
-        # new_root.right = new_right
-        # new_root.height = 1 + new_root.get_height()
         return new_root
-        # self = new_root
-        # self.height = 1 + self.get_height()
 
     def rebalance(self,val, bf, Node):
         """
@@ -152,9 +137,7 @@ class AVLTree(BinarySearchTree):
             #else do the initial rebalnce which is the right rebalance
             if val > new_root.left.val:
                 new_root.left = self.rotate_left(new_root.left)
-                # self.rotate('left', self.right)
-                # self.right.rotate_left()
-            # self.rotate_right()
+
             new_root = self.rotate_right(new_root)
 
         elif bf < -1: #Do the same thing except for the right
@@ -187,16 +170,14 @@ class AVLTree(BinarySearchTree):
         else:
             root.val = AVLTree(val)
 
-        # return root
-
         left_height = self.get_height(root.left)
         right_height = self.get_height(root.right)
         root.height = 1 + max(left_height, right_height)
         new_root = root
         bf = left_height - right_height
         if bf > 1 or bf < -1:
-            # self.height = 1 + self.get_height()
             return self.rebalance(val, bf, root)
+
         return new_root
 
 

@@ -1,5 +1,4 @@
 def robFrom(i, nums, memo, count=None):
-
     curr_num = None
     try:
         curr_num = nums[i]

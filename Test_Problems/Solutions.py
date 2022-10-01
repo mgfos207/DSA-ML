@@ -31,7 +31,21 @@ class Solution:
 
             i -= 1
 
+    def find_all_connected_nodes(self, graph):
+        self.allPaths = []
+        end = len(graph) - 1
 
+        def dfs(node, path):
+            if node == end:
+                self.allPaths.append(path)
+                
+            for nx in graph[node]:
+                dfs(nx, path + [nx])
+                
+        dfs(0,[0])
+        
+        return self.allPaths
+                    
 if __name__ == "__main__":
     sol  = Solution()
     sol.sort_pancakes([1,5,4,3,2])

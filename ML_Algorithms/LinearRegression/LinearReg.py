@@ -33,29 +33,30 @@ class LinearRegression:
 
 
 class LinearReg:
-    def __init(self, lr, weights, bias, iterations=1000):
+    def __init__(self, lr=0.001, iterations=1000):
         self.lr = lr
-        self.weights = weights
-        self.bias = bias
+        self.weights = None
+        self.bias = None
         self.iterations = iterations
 
     def fit(self, X, y):
         n_samples, n_features = X.shape
 
         #initialize weight and bias
-        self.weights = np.zeroes(n_features)
+        self.weights = np.zeros(n_features)
         self.bias = 0
 
         #iterative process
         for _ in range(0, self.iterations):
         
             y_pred = np.dot(X, self.weights) + self.bias
-
-            dw = (1/n_samples) * np.dot(X.T * (y_pred - y))
-            bias = (1/n_samples) * np.sum(y_pred - y)
+            cost = y_pred - y
+            dw = (1/n_samples) * np.dot(X.T, cost)
+            bias = (1/n_samples) * np.sum(cost)
 
             self.bias -= bias * self.lr
-            self.dw -= dw * self.lr
+            self.weights -= dw * self.lr
+        print(f"Completed the training process. Current weights are {self.weights}. Bias {self.bias}")
 
     def predict(self, X):
         y_infer = np.dot(X, self.weights) + self.bias

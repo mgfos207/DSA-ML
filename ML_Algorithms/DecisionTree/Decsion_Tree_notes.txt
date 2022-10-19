@@ -1,0 +1,14 @@
+When creating a Decision Tree
+
+Need to have a cost function
+
+DT's are an NP hard problem due to the permutations that you can
+Do when splits
+
+So to optimize this Decision Tree algorithms perform the cost locally
+using a greedy approach
+
+For our implementation we will be using information gain
+In the greedy approach
+
+    

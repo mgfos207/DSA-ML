@@ -52,7 +52,7 @@ class BinarySearchTree:
                 return False
             else:
                 self.right.find_val(val)
-
+        
     def print_tree(self):
         if self.left is not None:
             self.left.print_tree()

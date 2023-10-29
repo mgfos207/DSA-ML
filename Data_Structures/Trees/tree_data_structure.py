@@ -1,3 +1,4 @@
+import graphviz
 class BinarySearchTree:
     def __init__(self, val):
         self.val = None
@@ -74,6 +75,25 @@ class BinarySearchTree:
         3. The left and right subtree must also be a binary search tree
         """
         print(info)
+
+    def visualize_tree(self):
+        dot = graphviz.Digraph()
+        dot.node(str(self.val))
+
+        def add_node_edges(node):
+            if node.left:
+                dot.node(str(node.left.val))
+                dot.edge(str(node.val), str(node.left.val))
+                add_node_edges(node.left)
+            
+            if node.right:
+                dot.node(str(node.right.val))
+                dot.edge(str(node.val), str(node.right.val))
+                add_node_edges(node.right)            
+        
+        add_node_edges(self)
+        return dot
+
 
 class AVLTree(BinarySearchTree):
     def __init__(self, val):

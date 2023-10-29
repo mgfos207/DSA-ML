@@ -1,3 +1,4 @@
+import graphviz
 class DirectedGraph:
     def __init__(self, num_vertices, weighted):
         self.adj_list = [None] * num_vertices
@@ -13,6 +14,19 @@ class DirectedGraph:
             else: #Just a directed graph
                 src, dest = edge
                 self.adj_list[src].append(dest)
+    
+    def visualize_graph(self):
+        dot = graphviz.Digraph()
+        
+        def add_node_edges(src, edges):
+            for edge in edges:
+                dot.node(str(src))
+                dot.edge(str(src), str(edge))
+        
+        for src, edges in enumerate(self.adj_list):
+            add_node_edges(src, edges)
+        
+        return dot
 
     def print_adj_paths(self):
         for src, path in enumerate(self.adj_list):

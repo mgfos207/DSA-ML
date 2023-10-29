@@ -31,6 +31,31 @@ class DirectedGraph:
             add_node_edges(src, edges)
         
         return dot
+    
+    def dfs(self, vertex, visited):
+        visited.add(vertex)
+
+        print(vertex, end=" --> ")
+        
+        for adj_edge in self.adj_list[vertex]:
+            if adj_edge not in visited:
+                self.dfs(adj_edge, visited)
+
+    def bfs(self, vertex):
+        visited = [False] * (len(self.adj_list) + 1)
+
+        queue = list()
+        queue.append(vertex)
+        visited[vertex] = True
+
+        while queue:
+            curr_vertex = queue.pop(0)
+            print(curr_vertex, end=" --> ")
+            for edge in self.adj_list[curr_vertex]:
+                if visited[edge] == False:
+                    visited[edge] = True
+                    queue.append(edge)
+
 
     def print_adj_paths(self):
         for src, path in enumerate(self.adj_list):

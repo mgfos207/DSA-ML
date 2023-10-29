@@ -17,11 +17,15 @@ class DirectedGraph:
     
     def visualize_graph(self):
         dot = graphviz.Digraph()
-        
+
         def add_node_edges(src, edges):
             for edge in edges:
-                dot.node(str(src))
-                dot.edge(str(src), str(edge))
+                if self.with_weights:
+                    dot.node(str(src))
+                    dot.edge(str(src), str(edge[0]), weight=str(edge[1]), label=str(edge[1]))
+                else:
+                    dot.node(str(src))
+                    dot.edge(str(src), str(edge))
         
         for src, edges in enumerate(self.adj_list):
             add_node_edges(src, edges)
